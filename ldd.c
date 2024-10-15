@@ -7,6 +7,8 @@ MODULE_LICENSE("GPL"); //
 MODULE_AUTHOR("Vimal"); //
 MODULE_DESCRIPTION("Device driver"); //
 
+static char *msg = "Hello\n";
+module_param(msg, charp, S_IRUGO);
 static ssize_t	my_proc_read(struct file * file_ptr, char *user_space_buffer , size_t len, loff_t *offset);
 static ssize_t my_proc_write(struct file *file, const char *buffer, size_t count, loff_t  *data);
 
@@ -26,7 +28,6 @@ static ssize_t my_proc_read(struct file * file_ptr, char *user_space_buffer , si
 {
     int result;
     printk("Proc read \n");
-    char msg[] = "Hello\n";
     size_t len = strlen(msg);
     printk("%ld", len);
     if(*offset > 0){
