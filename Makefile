@@ -1,4 +1,5 @@
-obj-m := panic.o
+obj-m += kthread_test.o
+
 all:
 	make -C /lib/modules/`uname -r`/build M=$(PWD) modules
 clean:
