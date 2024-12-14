@@ -4,6 +4,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <sys/ioctl.h> 
+#include "ioctl_cmd.h"
 
 #define DEVICE_0 "/dev/mychardev0"
 #define DEVICE_1 "/dev/mychardev1"
@@ -15,6 +17,9 @@ void test_device(const char *device_path) {
     char read_buf[BUFFER_SIZE];
     ssize_t ret;
     off_t offset;
+    unsigned int length;          // Declare 'length' at the top
+    unsigned char fill_char = 'X'; // Declare 'fill_char' at the top
+    void *kernel_address;         // Declare 'kernel_address' at the top
 
     printf("Testing device: %s\n", device_path);
 
@@ -53,6 +58,31 @@ void test_device(const char *device_path) {
         return;
     }
     printf("Read %zd bytes from the device: %s\n", ret, read_buf);
+    
+
+     // Ioctl: Get Buffer Length
+    if (ioctl(fd, MSG_IOCTL_GET_LENGTH, &length) < 0) {
+        perror("Failed to get buffer length");
+        printf("Error: %s\n", strerror(errno));
+    } else {
+        printf("Buffer length: %u bytes\n", length);
+    }
+
+    // Ioctl: Fill Buffer
+    if (ioctl(fd, MSG_IOCTL_FILL_BUFFER, &fill_char) < 0) {
+        perror("Failed to fill the buffer");
+        printf("Error: %s\n", strerror(errno));
+    } else {
+        printf("Filled buffer with character: '%c'\n", fill_char);
+    }
+
+    // Ioctl: Get Kernel Buffer Address
+    if (ioctl(fd, MSG_GET_ADDRESS, &kernel_address) < 0) {
+        perror("Failed to get kernel buffer address");
+        printf("Error: %s\n", strerror(errno));
+    } else {
+        printf("Kernel buffer address: %p\n", kernel_address);
+    }
 
     // Close the device
     if (close(fd) < 0) {

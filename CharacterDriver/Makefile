@@ -1,5 +1,5 @@
 # Kernel module details
-obj-m := chardev.o
+obj-m := mychardev.o
 DEVICE_NAME_0 := /dev/mychardev0
 DEVICE_NAME_1 := /dev/mychardev1
 
@@ -29,13 +29,13 @@ clean:
 
 # Insert kernel module into the kernel
 load:
-	sudo insmod chardev.ko
+	sudo insmod mychardev.ko
 	sudo chmod 666 $(DEVICE_NAME_0)
 	sudo chmod 666 $(DEVICE_NAME_1)
 
 # Remove kernel module from the kernel
 unload:
-	sudo rmmod chardev
+	sudo rmmod mychardev
 
 # Show kernel log messages
 dmesg:
